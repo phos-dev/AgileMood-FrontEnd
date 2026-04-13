@@ -68,7 +68,7 @@ export default function MessagesPageClient({ teamId }: MessagesPageClientProps) 
       <ProtectedRoute>
         <div className="flex h-screen">
           <Sidebar />
-          <div className="flex-1 overflow-y-auto bg-gray-100">
+          <div className="flex-1 overflow-y-auto bg-gray-100 overflow-auto">
             <div className="flex h-screen items-center justify-center">
               <div className="text-center">
                 <Loader2 className="h-8 w-8 animate-spin text-blue-600 mx-auto mb-4" />
@@ -88,7 +88,7 @@ export default function MessagesPageClient({ teamId }: MessagesPageClientProps) 
     <ProtectedRoute>
       <div className="flex h-screen">
         <Sidebar />
-        <div className="flex-1 overflow-y-auto bg-gray-100">
+        <div className="flex-1 overflow-y-auto bg-gray-100 overflow-auto">
           <Toaster richColors position="bottom-right" />
           <div className="container mx-auto py-6">
             <div className="mb-6 flex items-center justify-between">

@@ -257,38 +257,31 @@ export const EmotionRecordProvider = ({ children }: { children: ReactNode }) => 
   }, [user, API_URL]);
 
   const fetchTeamEmotions = useCallback(async () => {
-    // Evitar chamadas duplicadas em um curto período de tempo (500ms)
+      let teamId = user?.team_id;
+      
+      if (!teamId) {
+        const pathParts = window.location.pathname.split('/');
+        const idFromUrl = pathParts.length > 2 ? parseInt(pathParts[2], 10) : NaN;
+        
+        if (!isNaN(idFromUrl)) {
+          teamId = idFromUrl;
+        } else {
+          console.log("fetchTeamEmotions - Aguardando carregamento do usuário...");
+          return; 
+        }
+      }
+
     const now = Date.now();
     if (now - lastFetchTimeRef.current.teamEmotions < 500) {
       console.log("fetchTeamEmotions - Chamada ignorada (muito frequente)");
       return;
     }
     
+    // Atualiza o timer APENAS quando a requisição real for prosseguir
     lastFetchTimeRef.current.teamEmotions = now;
-    console.log("fetchTeamEmotions - Iniciando busca de emoções do time");
+    console.log(`fetchTeamEmotions - Buscando emoções para o time ${teamId}`);
     
     try {
-      // Obter o team_id do parâmetro da URL se não estiver disponível no objeto do usuário
-      let teamId = user?.team_id;
-      
-      if (!teamId) {
-        // Tentar obter o ID do time da URL
-        const pathParts = window.location.pathname.split('/');
-        const idFromUrl = pathParts.length > 2 ? parseInt(pathParts[2], 10) : NaN;
-        
-        if (!isNaN(idFromUrl)) {
-          teamId = idFromUrl;
-          console.log("fetchTeamEmotions - Team ID obtido da URL:", teamId);
-        } else {
-          console.log("fetchTeamEmotions - Não foi possível determinar o ID do time");
-  
-          toast.info("⚡ Exibindo emoções do time (mock).");
-          return;
-        }
-      }
-      
-      // Usar o endpoint específico para buscar emoções do time
-      console.log(`fetchTeamEmotions - Buscando emoções para o time ${teamId}`);
       const response = await fetch(`${API_URL}/teams/${teamId}/emotions`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
@@ -297,20 +290,13 @@ export const EmotionRecordProvider = ({ children }: { children: ReactNode }) => 
         const data = await response.json();
         
         if (data.emotions && data.emotions.length > 0) {
-          console.log(`Encontradas ${data.emotions.length} emoções para o time ${teamId}`);
           setTeamEmotions(data.emotions);
         } else {
-          console.log("Nenhuma emoção encontrada para este time, usando mock");
-         
           toast.info("⚡ Exibindo emoções do time (mock).");
         }
-      } else {
-        console.error("Erro ao buscar emoções:", response.status, response.statusText);
-       
       }
     } catch (error) {
       console.error("Erro ao buscar emoções do time:", error);
-     
     }
   }, [user, API_URL]);
 

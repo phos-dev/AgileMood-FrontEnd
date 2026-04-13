@@ -2,7 +2,7 @@
 
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Home, User, LogOut, Menu, Smile } from "lucide-react";
+import { Home, User, LogOut, Menu, Smile, Blocks } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import Image from "next/image";
@@ -23,11 +23,13 @@ const NavItem: React.FC<NavItemProps> = ({ href, Icon, label }) => (
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
-  const { logout } = useAuthContext();
+  const { logout, user } = useAuthContext();
 
   const handleLogout = () => {
     logout();
   };
+
+  const isManager = user?.role === 'manager'
 
   return (
     <div className="flex">
@@ -45,7 +47,11 @@ export default function Sidebar() {
             <NavItem href="/home" Icon={Home} label="Home" />
             <NavItem href="/profile" Icon={User} label="Perfil" />
             <NavItem href="/emotions-demo" Icon={Smile} label="Demo de Emoções" />
-            <button onClick={handleLogout} className="flex items-center space-x-2 hover:bg-red-600 p-2 rounded w-full">
+            {isManager && (
+              <NavItem href="/integrations" Icon={Blocks} label="Integrações" />
+            )}
+
+            <button onClick={handleLogout} className="flex items-center space-x-2 hover:bg-red-600 p-2 rounded w-full mt-auto">
               <LogOut size={20} />
               <span>Logout</span>
             </button>
@@ -56,14 +62,21 @@ export default function Sidebar() {
       {/* Sidebar fixa em telas grandes */}
       <div className="hidden lg:flex flex-col w-64 h-screen bg-blue-700 text-white p-5">
         <Image className="mb-6" src={logo} alt="Logo" width={150} height={150} />
-        <nav className="flex flex-col space-y-4">
+        <nav className="flex flex-col space-y-4 flex-1">
           <NavItem href="/home" Icon={Home} label="Home" />
           <NavItem href="/profile" Icon={User} label="Perfil" />
           <NavItem href="/emotions-demo" Icon={Smile} label="Demo de Emoções" />
-          <button onClick={handleLogout} className="flex items-center space-x-2 hover:bg-red-600 p-2 rounded w-full">
-            <LogOut size={20} />
-            <span>Logout</span>
-          </button>
+          
+          {isManager && (
+            <NavItem href="/integrations" Icon={Blocks} label="Integrações" />
+          )}
+
+          <div className="mt-auto">
+            <button onClick={handleLogout} className="flex items-center space-x-2 hover:bg-red-600 p-2 rounded w-full">
+              <LogOut size={20} />
+              <span>Logout</span>
+            </button>
+          </div>
         </nav>
       </div>
     </div>

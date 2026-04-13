@@ -98,7 +98,7 @@ export default function RegisterMood() {
     <ProtectedRoute>
       <div className="flex h-screen">
         <Sidebar />
-        <div className="flex-1 flex flex-col items-center justify-center bg-gray-100 p-6">
+        <div className="flex-1 flex flex-col items-center justify-center bg-gray-100 p-6 overflow-auto">
           <Toaster position="bottom-right" richColors />
           <AnimatePresence mode="wait">
             <motion.div

@@ -22,7 +22,7 @@ export default function EmotionsDemo() {
       <Sidebar />
 
       {/* Conteúdo Principal */}
-      <div className="flex-1 min-h-screen bg-gray-50 p-8">
+      <div className="flex-1 min-h-screen bg-gray-50 p-8 overflow-auto">
         <div className="max-w-6xl mx-auto">
           {/* Cabeçalho */}
           <div className="flex justify-between items-center mb-8">

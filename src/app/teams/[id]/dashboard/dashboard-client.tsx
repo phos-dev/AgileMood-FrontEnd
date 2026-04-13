@@ -549,7 +549,7 @@ export default function DashboardClient({ teamId }: DashboardClientProps) {
     <ProtectedRoute>
       <div className="flex h-screen">
         <Sidebar />
-        <div className="flex-1 overflow-y-auto bg-gray-100">
+        <div className="flex-1 overflow-y-auto bg-gray-100 overflow-auto">
           <Toaster richColors position="bottom-right" />
           <div className="container mx-auto py-6">
             <div className="flex justify-between items-center mb-6">

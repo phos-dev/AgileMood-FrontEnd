@@ -170,7 +170,7 @@ export default function ManageEmotionsClient({ teamId }: ManageEmotionsClientPro
       <ProtectedRoute>
         <div className="flex min-h-screen">
           <Sidebar />
-          <div className="flex-1 p-8 flex items-center justify-center">
+          <div className="flex-1 p-8 flex items-center justify-center overflow-auto">
             <div className="flex flex-col items-center">
               <Loader2 className="h-12 w-12 animate-spin text-primary" />
               <p className="mt-4 text-lg">Carregando emoções...</p>
@@ -185,7 +185,7 @@ export default function ManageEmotionsClient({ teamId }: ManageEmotionsClientPro
     <ProtectedRoute>
       <div className="flex min-h-screen">
         <Sidebar />
-        <div className="flex-1 p-8">
+        <div className="flex-1 p-8 overflow-auto">
           <div className="max-w-5xl mx-auto">
             <div className="flex items-center mb-8">
               <Button 

@@ -112,7 +112,7 @@ export default function ProfilePage() {
     <ProtectedRoute>
       <div className="flex h-screen">
         <Sidebar />
-        <div className="flex-1 overflow-y-auto bg-gray-50 p-8">
+        <div className="flex-1 overflow-y-auto bg-gray-50 p-8 overflow-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
