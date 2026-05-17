@@ -69,7 +69,7 @@ export default function Sidebar() {
           
           {isManager && (
             <NavItem href="/integrations" Icon={Blocks} label="Integrações" />
-          )}
+          )} 
 
           <div className="mt-auto">
             <button onClick={handleLogout} className="flex items-center space-x-2 hover:bg-red-600 p-2 rounded w-full">
