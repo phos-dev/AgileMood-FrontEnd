@@ -75,11 +75,10 @@ export function DateRangePicker({
               variant="outline"
               size="sm"
               onClick={() => {
-                const today = new Date()
-                onDateRangeChange({
-                  from: addDays(today, -30),
-                  to: today
-                })
+                const today = new Date();
+                const from = addDays(today, -30);
+                from.setHours(0, 0, 0, 0);
+                onDateRangeChange({ from, to: today });
               }}
             >
               Últimos 30 dias

@@ -66,11 +66,13 @@ interface TeamResponse {
 interface EmojiDistribution {
   emotion_name: string;
   frequency: number;
+  color?: string;
 }
 
 interface AverageIntensity {
   emotion_name: string;
   avg_intensity: number;
+  color?: string;
 }
 
 interface UserEmotionRecord {
@@ -78,6 +80,7 @@ interface UserEmotionRecord {
   frequency: number;
   avg_intensity: number;
   emotion_id?: number;
+  color?: string;
 }
 
 interface EmojiDistributionResponse {
@@ -129,8 +132,10 @@ export default function DashboardClient({ teamId }: DashboardClientProps) {
     let filteredEmotionReports = [...data.emotions_reports];
     
     if (range?.from) {
-      filteredEmotionReports = filteredEmotionReports.filter(report => 
-        new Date(report.created_at) >= range.from!
+      const adjustedStart = new Date(range.from);
+      adjustedStart.setHours(0, 0, 0, 0);
+      filteredEmotionReports = filteredEmotionReports.filter(report =>
+        new Date(report.created_at) >= adjustedStart
       );
     }
     
@@ -168,7 +173,8 @@ export default function DashboardClient({ teamId }: DashboardClientProps) {
       if (count > 0) {
         emojiDistributionData.push({
           emotion_name: `${emotion.emoji} ${emotion.name}`,
-          frequency: count
+          frequency: count,
+          color: emotion.color
         });
       }
     });
@@ -205,7 +211,8 @@ export default function DashboardClient({ teamId }: DashboardClientProps) {
         const avgIntensity = intensities.reduce((sum, val) => sum + val, 0) / intensities.length;
         averageIntensityData.push({
           emotion_name: `${emotion.emoji} ${emotion.name}`,
-          avg_intensity: Number(avgIntensity.toFixed(1))
+          avg_intensity: Number(avgIntensity.toFixed(1)),
+          color: emotion.color
         });
       }
     });
@@ -244,7 +251,8 @@ export default function DashboardClient({ teamId }: DashboardClientProps) {
           emotion_name: `${emotion.emoji} ${emotion.name}`,
           frequency: count,
           avg_intensity: Number(avgIntensity.toFixed(1)),
-          emotion_id: emotion.id
+          emotion_id: emotion.id,
+          color: emotion.color
         });
       }
     });
@@ -327,15 +335,25 @@ export default function DashboardClient({ teamId }: DashboardClientProps) {
   // Função para processar os registros de emoções e gerar a análise por usuário
   const generateUserEmotionAnalysis = useCallback((userId: number) => {
     if (!teamData) return null;
-    
+
     const { emotions_reports, emotions, members } = teamData;
     const user = members.find(member => member.id === userId);
-    
+
     if (!user) return null;
-    
-    // Filtra os registros pelo usuário (sem filtro de data)
-    const filteredReports = emotions_reports
+
+    let filteredReports = emotions_reports
       .filter(report => report.user_id !== null && report.user_id === userId && !report.is_anonymous);
+
+    if (dateRange?.from) {
+      const adjustedStart = new Date(dateRange.from);
+      adjustedStart.setHours(0, 0, 0, 0);
+      filteredReports = filteredReports.filter(r => new Date(r.created_at) >= adjustedStart);
+    }
+    if (dateRange?.to) {
+      const adjustedEnd = new Date(dateRange.to);
+      adjustedEnd.setHours(23, 59, 59, 999);
+      filteredReports = filteredReports.filter(r => new Date(r.created_at) <= adjustedEnd);
+    }
     
     // Inicializa os contadores e acumuladores para cada emoção
     const emotionData = new Map<number, { count: number, intensities: number[] }>();
@@ -360,16 +378,17 @@ export default function DashboardClient({ teamId }: DashboardClientProps) {
         emotion_name: `${emotion.emoji} ${emotion.name}`,
         frequency: data.count,
         avg_intensity: Number(avgIntensity.toFixed(1)),
-        emotion_id: emotion.id
+        emotion_id: emotion.id,
+        color: emotion.color
       };
     }).filter(record => record.frequency > 0) // Remove emoções sem registros
       .sort((a, b) => b.frequency - a.frequency); // Ordena por frequência decrescente
-    
+
     return {
       user_name: user.name,
       all_user_emotion_records: records
     };
-  }, [teamData]);
+  }, [teamData, dateRange]);
 
   // Buscar dados do time
   const fetchTeamData = useCallback(async () => {
@@ -551,7 +570,7 @@ export default function DashboardClient({ teamId }: DashboardClientProps) {
         <Sidebar />
         <div className="flex-1 overflow-y-auto bg-gray-100 overflow-auto">
           <Toaster richColors position="bottom-right" />
-          <div className="container mx-auto py-6">
+          <div className="container mx-auto py-6 px-6">
             <div className="flex justify-between items-center mb-6">
               <div>
                 <h1 className="text-3xl font-bold">Dashboard do Time</h1>
@@ -584,17 +603,8 @@ export default function DashboardClient({ teamId }: DashboardClientProps) {
                     />
                   </div>
                 </div>
-                <div className="flex justify-between items-center">
-                  <div>
-                    {dateRange?.from && (
-                      <div className="p-2 bg-blue-50 text-blue-700 rounded-md text-sm">
-                        {filteredReports.length} registros encontrados no período selecionado
-                        {dateRange?.from && dateRange?.to && 
-                          ` (${format(dateRange.from, 'dd/MM/yyyy', { locale: ptBR })} a ${format(dateRange.to, 'dd/MM/yyyy', { locale: ptBR })})`
-                        }
-                      </div>
-                    )}
-                  </div>
+                <div className="flex justify-between items-center flex-wrap gap-4">
+                  
                   <div className="flex gap-2">
                     <Button 
                       variant="outline" 
@@ -612,6 +622,16 @@ export default function DashboardClient({ teamId }: DashboardClientProps) {
                       <Download className="h-4 w-4" />
                       Exportar CSV
                     </Button>
+                  </div>
+                  <div>
+                    {dateRange?.from && (
+                      <div className="p-2 bg-blue-50 text-blue-700 rounded-md text-sm">
+                        {filteredReports.length} registros encontrados no período selecionado
+                        {dateRange?.from && dateRange?.to && 
+                          ` (${format(dateRange.from, 'dd/MM/yyyy', { locale: ptBR })} a ${format(dateRange.to, 'dd/MM/yyyy', { locale: ptBR })})`
+                        }
+                      </div>
+                    )}
                   </div>
                 </div>
               </CardContent>
@@ -709,15 +729,23 @@ export default function DashboardClient({ teamId }: DashboardClientProps) {
                           <div className="mt-8 pt-6 border-t">
                             <h3 className="font-medium mb-4">Detalhamento por Emoção</h3>
                             {emojiDistribution?.emoji_distribution.map((item) => (
-                              <div key={item.emotion_name} className="space-y-2 mb-4">
+                              <div
+                                key={item.emotion_name}
+                                className="border rounded-lg p-3 mb-3 space-y-2"
+                                style={{
+                                  borderColor: item.color || '#e2e8f0',
+                                  backgroundColor: `${item.color || '#e2e8f0'}15`,
+                                }}
+                              >
                                 <div className="flex items-center justify-between">
                                   <span className="font-medium">{item.emotion_name}</span>
                                   <span className="text-sm font-medium">{item.frequency} registros</span>
                                 </div>
                                 <div className="w-full h-4 bg-gray-200 rounded-full overflow-hidden">
                                   <div
-                                    className="h-full bg-blue-500 rounded-full"
+                                    className="h-full rounded-full"
                                     style={{
+                                      backgroundColor: item.color || '#3b82f6',
                                       width: `${Math.min(
                                         (item.frequency /
                                           Math.max(
@@ -778,8 +806,9 @@ export default function DashboardClient({ teamId }: DashboardClientProps) {
                               <div className="flex items-center gap-2">
                                 <div className="w-40 h-2 bg-gray-200 rounded-full overflow-hidden">
                                   <div
-                                    className="h-full bg-orange-500 rounded-full"
+                                    className="h-full rounded-full"
                                     style={{
+                                      backgroundColor: item.color || '#f97316',
                                       width: `${(item.avg_intensity / 5) * 100}%`,
                                     }}
                                   />
@@ -824,8 +853,15 @@ export default function DashboardClient({ teamId }: DashboardClientProps) {
                     ) : (
                       <div className="space-y-4">
                         {anonymousRecords?.all_user_emotion_records.map((item) => (
-                          <div key={item.emotion_name} className="flex items-center justify-between">
-                            <span>{item.emotion_name}</span>
+                          <div
+                            key={item.emotion_name}
+                            className="flex items-center justify-between border rounded-lg p-3 mb-2"
+                            style={{
+                              borderColor: item.color || '#e2e8f0',
+                              backgroundColor: `${item.color || '#e2e8f0'}15`,
+                            }}
+                          >
+                            <span className="font-medium">{item.emotion_name}</span>
                             <div className="flex items-center gap-4">
                               <div className="flex items-center gap-1">
                                 <span className="text-sm text-gray-500">Freq:</span>
@@ -866,7 +902,7 @@ export default function DashboardClient({ teamId }: DashboardClientProps) {
                               : report.user_name || teamData.members.find(m => m.id === report.user_id)?.name || 'Usuário';
                             
                             return (
-                              <div key={index} className="p-3 rounded-lg border" style={{ borderColor: emotion?.color || '#e2e8f0' }}>
+                              <div key={index} className="p-3 rounded-lg border" style={{ borderColor: emotion?.color || '#e2e8f0', backgroundColor: `${emotion?.color || '#e2e8f0'}15` }}>
                                 <div className="flex justify-between items-center mb-2">
                                   <div className="flex items-center gap-2">
                                     <span className="text-xl">{emotion?.emoji}</span>
@@ -949,15 +985,23 @@ export default function DashboardClient({ teamId }: DashboardClientProps) {
                         <div className="mt-8 pt-6 border-t">
                           <h3 className="font-medium mb-4">Detalhamento por Emoção</h3>
                           {emojiDistribution?.emoji_distribution.map((item) => (
-                            <div key={item.emotion_name} className="space-y-2 mb-4">
+                            <div
+                              key={item.emotion_name}
+                              className="border rounded-lg p-3 mb-3 space-y-2"
+                              style={{
+                                borderColor: item.color || '#e2e8f0',
+                                backgroundColor: `${item.color || '#e2e8f0'}15`,
+                              }}
+                            >
                               <div className="flex items-center justify-between">
                                 <span className="font-medium">{item.emotion_name}</span>
                                 <span className="text-sm font-medium">{item.frequency} registros</span>
                               </div>
                               <div className="w-full h-4 bg-gray-200 rounded-full overflow-hidden">
                                 <div
-                                  className="h-full bg-blue-500 rounded-full"
+                                  className="h-full rounded-full"
                                   style={{
+                                    backgroundColor: item.color || '#3b82f6',
                                     width: `${Math.min(
                                       (item.frequency /
                                         Math.max(
@@ -1027,7 +1071,14 @@ export default function DashboardClient({ teamId }: DashboardClientProps) {
                         <div className="mt-8 pt-6 border-t">
                           <h3 className="font-medium mb-4">Detalhamento por Emoção</h3>
                           {averageIntensity?.average_intensity.map((item) => (
-                            <div key={item.emotion_name} className="space-y-2 mb-4">
+                            <div
+                              key={item.emotion_name}
+                              className="border rounded-lg p-3 mb-3 space-y-2"
+                              style={{
+                                borderColor: item.color || '#e2e8f0',
+                                backgroundColor: `${item.color || '#e2e8f0'}15`,
+                              }}
+                            >
                               <div className="flex items-center justify-between">
                                 <span className="font-medium">{item.emotion_name}</span>
                                 <span className="text-sm font-medium">
@@ -1036,8 +1087,9 @@ export default function DashboardClient({ teamId }: DashboardClientProps) {
                               </div>
                               <div className="w-full h-4 bg-gray-200 rounded-full overflow-hidden">
                                 <div
-                                  className="h-full bg-orange-500 rounded-full"
+                                  className="h-full rounded-full"
                                   style={{
+                                    backgroundColor: item.color || '#f97316',
                                     width: `${(item.avg_intensity / 5) * 100}%`,
                                   }}
                                 />
@@ -1098,13 +1150,20 @@ export default function DashboardClient({ teamId }: DashboardClientProps) {
                           ) : (
                             <div className="space-y-6">
                               {userEmotionAnalysis.all_user_emotion_records.map((item) => (
-                                <div key={item.emotion_name} className="space-y-4">
+                                <div
+                                  key={item.emotion_name}
+                                  className="border rounded-lg p-3 space-y-3"
+                                  style={{
+                                    borderColor: item.color || '#e2e8f0',
+                                    backgroundColor: `${item.color || '#e2e8f0'}15`,
+                                  }}
+                                >
                                   <div className="flex justify-between items-center">
                                     <h4 className="font-medium">{item.emotion_name}</h4>
-                                    
+
                                     {/* Botão de Feedback específico para emoção - apenas para gerentes */}
                                     {teamData?.user_role === 'manager' && (
-                                      <FeedbackMessage 
+                                      <FeedbackMessage
                                         teamId={teamId}
                                         memberId={selectedMemberId}
                                         memberName={userEmotionAnalysis.user_name}
@@ -1113,7 +1172,7 @@ export default function DashboardClient({ teamId }: DashboardClientProps) {
                                       />
                                     )}
                                   </div>
-                                  
+
                                   <div className="space-y-2">
                                     <div className="flex items-center justify-between">
                                       <span className="text-sm text-gray-600">Frequência</span>
@@ -1121,8 +1180,9 @@ export default function DashboardClient({ teamId }: DashboardClientProps) {
                                     </div>
                                     <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
                                       <div
-                                        className="h-full bg-blue-500 rounded-full"
+                                        className="h-full rounded-full"
                                         style={{
+                                          backgroundColor: item.color || '#3b82f6',
                                           width: `${Math.min(
                                             (item.frequency /
                                               Math.max(
@@ -1137,7 +1197,7 @@ export default function DashboardClient({ teamId }: DashboardClientProps) {
                                       />
                                     </div>
                                   </div>
-                                  
+
                                   <div className="space-y-2">
                                     <div className="flex items-center justify-between">
                                       <span className="text-sm text-gray-600">Intensidade Média</span>
@@ -1145,8 +1205,9 @@ export default function DashboardClient({ teamId }: DashboardClientProps) {
                                     </div>
                                     <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
                                       <div
-                                        className="h-full bg-orange-500 rounded-full"
+                                        className="h-full rounded-full"
                                         style={{
+                                          backgroundColor: item.color || '#f97316',
                                           width: `${(item.avg_intensity / 5) * 100}%`,
                                         }}
                                       />
@@ -1205,7 +1266,14 @@ export default function DashboardClient({ teamId }: DashboardClientProps) {
                             : null;
                           
                           return (
-                            <div key={member.id} className="p-4 border rounded-lg">
+                            <div
+                              key={member.id}
+                              className="p-4 border rounded-lg"
+                              style={{
+                                borderColor: mostFrequentEmotion?.color || '#e2e8f0',
+                                backgroundColor: `${mostFrequentEmotion?.color || '#e2e8f0'}10`,
+                              }}
+                            >
                               <div className="flex justify-between items-center mb-3">
                                 <h4 className="font-medium">{member.name}</h4>
                                 <div className="flex items-center gap-2">
