@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   description: "Selecione as emoções que serão utilizadas pelo seu time",
 };
 
-export default function ManageEmotionsPage({ params }: { params: { id: string } }) {
-  return <ManageEmotionsClient teamId={parseInt(params.id)} />;
+export default async function ManageEmotionsPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  return <ManageEmotionsClient teamId={parseInt(id)} />;
 } 

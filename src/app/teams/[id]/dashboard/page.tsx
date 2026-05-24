@@ -3,10 +3,11 @@ import DashboardClient from './dashboard-client';
 
 // Make the dynamic route param <id> typed and compliant with Next.js 15 PageProps
 
-export default function DashboardPage({ params }: { params: { id: string } }) {
+export default async function DashboardPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   return (
     <Suspense fallback={<div>Carregando...</div>}>
-      <DashboardClient teamId={parseInt(params.id, 10)} />
+      <DashboardClient teamId={parseInt(id, 10)} />
     </Suspense>
   );
 }

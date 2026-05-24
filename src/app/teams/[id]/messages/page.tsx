@@ -7,15 +7,14 @@ export const metadata: Metadata = {
 };
 
 interface MessagesPageProps {
-  params: {
-    id: string;
-  };
+  params: Promise<{ id: string }>;
 }
 
-export default function MessagesPage({ params }: MessagesPageProps) {
+export default async function MessagesPage({ params }: MessagesPageProps) {
+  const { id } = await params;
   return (
     <div>
-      <MessagesPageClient teamId={parseInt(params.id, 10)} />
+      <MessagesPageClient teamId={parseInt(id, 10)} />
     </div>
   );
 } 

@@ -1,11 +1,10 @@
 import TeamPageClient from "./team-page-client";
 
 interface TeamPageProps {
-  params: {
-    id: string;
-  };
+  params: Promise<{ id: string }>;
 }
 
 export default async function TeamPage({ params }: TeamPageProps) {
-  return <TeamPageClient teamId={Number(params.id)} />;
+  const { id } = await params;
+  return <TeamPageClient teamId={Number(id)} />;
 } 

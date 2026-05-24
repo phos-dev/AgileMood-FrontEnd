@@ -238,13 +238,13 @@ export const EmotionRecordProvider = ({ children }: { children: ReactNode }) => 
         }
       }
 
-      const response = await fetch(`${API_URL}/teams/${teamId}/emotion-records`, {
+      const response = await fetch(`${API_URL}/teams/${teamId}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       if (response.ok) {
         const data = await response.json();
-        setEmotionRecords(data.emotion_records );
-        if (data.emotion_records.length === 0) toast.info("📚 Nenhum registro encontrado.");
+        setEmotionRecords(data.emotions_reports);
+        if (data.emotions_reports.length === 0) toast.info("📚 Nenhum registro encontrado.");
       } else {
       
       }
