@@ -855,7 +855,7 @@ function ManagerDualSection() {
                 </h3>
               </div>
               <p className="text-blue-100 text-sm leading-relaxed mb-6">
-                Score médio de segurança psicológica com dispersão interna. Evolução histórica por sprint. Alerta de heterogeneidade alta sinaliza percepções divergentes no time.
+                Score médio de segurança psicológica calculado a cada sprint. Evolução histórica comparando o clima do time ao longo das sprints.
               </p>
               <div className="space-y-3">
                 {rows.map((r) => (
@@ -899,7 +899,7 @@ function FeaturesSection() {
     {
       icon: <BarChart2 size={22} className="text-blue-600" />,
       title: "Cálculo de Métricas",
-      desc: "Média e desvio-padrão automáticos das respostas do time, incluindo indicadores de dispersão interna.",
+      desc: "Score médio automático dos 7 itens da escala de Edmondson, com recodificação dos itens reversos e histórico por sprint.",
     },
     {
       icon: <TrendingUp size={22} className="text-blue-600" />,
