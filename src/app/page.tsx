@@ -23,6 +23,9 @@ import {
   BookOpen,
   Brain,
   AlertTriangle,
+  Code2,
+  Zap,
+  Activity,
 } from "lucide-react";
 import nameLogo from "../public/nameLogo.png";
 import ufrpeLogo from "../public/ufrpe.png";
@@ -132,7 +135,7 @@ function JiraIcon() {
 
 function Navbar() {
   return (
-    <header className="sticky top-0 z-50 bg-[#1e3a5f] border-b border-white/10 shadow-sm">
+    <header className="sticky top-0 z-50 bg-blue-700 border-b border-white/10 shadow-sm">
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
         <Image src={nameLogo} alt="AgileMood" height={36} className="w-auto" />
         <Button asChild className="bg-white text-[#1e3a5f] hover:bg-blue-50 text-sm px-5">
@@ -147,7 +150,12 @@ function HeroSection() {
   return (
     <section
       className="relative min-h-[92vh] flex items-center justify-center overflow-hidden"
-      style={{ background: "linear-gradient(135deg, #0f2240 0%, #1e3a5f 50%, #1a4480 100%)" }}
+      style={{
+        backgroundImage:
+          "linear-gradient(135deg, rgba(15,34,64,0.88) 0%, rgba(30,58,95,0.82) 50%, rgba(26,68,128,0.88) 100%), url('https://img.magnific.com/fotos-gratis/um-grupo-de-pessoas-multinacionais-ocupadas-trabalhando-no-escritorio_146671-15665.jpg?semt=ais_hybrid&w=740&q=80')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
     >
       {/* Background texture */}
       <div
@@ -214,7 +222,7 @@ function HeroSection() {
             className="border-white/40 bg-transparent text-white hover:bg-white/10 hover:text-white px-8 py-3 text-base"
           >
             <a
-              href="https://github.com/Arth19/AgileMood-FrontEnd"
+              href="https://github.com/phos-dev/AgileMood-FrontEnd"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -333,6 +341,153 @@ function HowItWorksSection() {
             </div>
           </FadeIn>
         </div>
+      </div>
+    </section>
+  );
+}
+
+function EmotionsSection() {
+  const impacts = [
+    {
+      icon: <Code2 size={20} className="text-white" />,
+      colorBg: "bg-rose-500",
+      cardBg: "bg-rose-50",
+      cardBorder: "border-rose-100",
+      title: "Qualidade do código",
+      desc: "Emoções negativas levam a código desorganizado, propenso a erros e até à exclusão intencional de partes do projeto — gerando dívida técnica invisível.",
+      source: "Graziotin et al., 2018 · Salido et al., 2023",
+    },
+    {
+      icon: <Zap size={20} className="text-white" />,
+      colorBg: "bg-amber-500",
+      cardBg: "bg-amber-50",
+      cardBorder: "border-amber-100",
+      title: "Velocidade de resolução",
+      desc: "Desenvolvedores felizes corrigem bugs mais rápido e mantêm desempenho cognitivo superior. A infelicidade aumenta o tempo de resolução de problemas.",
+      source: "Graziotin et al., 2014",
+    },
+    {
+      icon: <Users size={20} className="text-white" />,
+      colorBg: "bg-emerald-600",
+      cardBg: "bg-emerald-50",
+      cardBorder: "border-emerald-100",
+      title: "Colaboração e coesão",
+      desc: "Consciência emocional permite que membros se aproximem dos colegas, ofereçam suporte e construam confiança — bases do trabalho ágil eficaz.",
+      source: "Luong et al., 2021",
+    },
+  ];
+
+  return (
+    <section className="bg-white py-24 px-6">
+      <div className="max-w-5xl mx-auto">
+        <FadeIn className="text-center mb-16">
+          <p className="text-blue-600 font-semibold text-sm uppercase tracking-widest mb-3">
+            O papel das emoções
+          </p>
+          <h2
+            className="text-4xl font-extrabold text-[#1e3a5f]"
+            style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+          >
+            Humor afeta diretamente a qualidade do software
+          </h2>
+          <p className="text-slate-500 mt-4 max-w-2xl mx-auto">
+            A relação entre estados emocionais e qualidade do produto é bidirecional e amplamente documentada na literatura de engenharia de software.
+          </p>
+        </FadeIn>
+
+        {/* Impact cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-14">
+          {impacts.map((item, i) => (
+            <FadeIn key={item.title} delay={i * 0.08}>
+              <div className={`rounded-2xl border ${item.cardBorder} ${item.cardBg} p-6 h-full select-none`}>
+                <div className={`w-10 h-10 rounded-xl ${item.colorBg} flex items-center justify-center mb-4`}>
+                  {item.icon}
+                </div>
+                <h3 className="font-bold text-[#1e3a5f] mb-2" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                  {item.title}
+                </h3>
+                <p className="text-slate-600 text-sm leading-relaxed mb-3">{item.desc}</p>
+                <p className="text-xs text-slate-400 italic">{item.source}</p>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+
+        {/* Why any moment */}
+        <FadeIn delay={0.15}>
+          <div className="bg-blue-50 border border-blue-100 rounded-2xl p-8 mb-8 select-none">
+            <div className="flex flex-col md:flex-row items-start gap-5">
+              <div className="w-12 h-12 rounded-xl bg-blue-600 flex items-center justify-center shrink-0">
+                <Clock className="text-white" size={22} />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-[#1e3a5f] mb-3" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                  Por que registrar <span className="italic">a qualquer momento</span>?
+                </h3>
+                <p className="text-slate-600 leading-relaxed mb-3">
+                  Emoções surgem de <strong>eventos situacionais concretos</strong> — a issue que não compila há horas, o code review que veio duro, a reunião que saiu do controle. Esses gatilhos acontecem <em>durante</em> a sprint, não no final dela.
+                </p>
+                <p className="text-slate-600 leading-relaxed">
+                  Dado capturado no momento = sinal real. Dado coletado dias depois em retrospectiva = memória distorcida pela dinâmica do grupo. O registro contínuo garante que sentimentos que poderiam ficar ocultos cheguem ao gestor em tempo de agir.
+                </p>
+              </div>
+            </div>
+          </div>
+        </FadeIn>
+
+        {/* Bidirectional connection: vicious vs virtuous cycle */}
+        <FadeIn delay={0.2}>
+          <div className="bg-slate-50 border border-slate-200 rounded-2xl p-8 select-none">
+            <p className="text-center text-sm font-semibold text-slate-500 uppercase tracking-widest mb-8">
+              A conexão bidirecional: emoções ↔ segurança psicológica
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Vicious cycle */}
+              <div className="bg-rose-50 border border-rose-200 rounded-xl p-5">
+                <p className="text-sm font-bold text-rose-700 mb-3">
+                  ↓ Ciclo vicioso
+                </p>
+                <ul className="space-y-2 text-sm text-slate-600">
+                  <li className="flex items-start gap-2">
+                    <span className="text-rose-400 mt-0.5 shrink-0">•</span>
+                    Excesso de controle e supervisão gera estresse e desrespeito
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-rose-400 mt-0.5 shrink-0">•</span>
+                    Baixa segurança psicológica → membros reprimem emoções negativas
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-rose-400 mt-0.5 shrink-0">•</span>
+                    Emoções reprimidas → menos colaboração, mais erros, pior qualidade
+                  </li>
+                </ul>
+              </div>
+              {/* Virtuous cycle */}
+              <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-5">
+                <p className="text-sm font-bold text-emerald-700 mb-3">
+                  ↑ Ciclo virtuoso
+                </p>
+                <ul className="space-y-2 text-sm text-slate-600">
+                  <li className="flex items-start gap-2">
+                    <span className="text-emerald-500 mt-0.5 shrink-0">•</span>
+                    Alta segurança psicológica evoca conforto, alegria e motivação
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-emerald-500 mt-0.5 shrink-0">•</span>
+                    Emoções positivas → mais colaboração, melhor código, menos bugs
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-emerald-500 mt-0.5 shrink-0">•</span>
+                    Bom clima emocional → reforça ainda mais a segurança do time
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <p className="text-center text-xs text-slate-400 mt-6">
+              Fonte: Weibel et al., 2016 · Lee, 2021 · Melo, Marinho &amp; Sampaio, SBQS 2025
+            </p>
+          </div>
+        </FadeIn>
       </div>
     </section>
   );
@@ -465,7 +620,7 @@ function WhenToUseSection() {
               </p>
               {/* Example question */}
               <blockquote className="border-l-4 border-[#1e3a5f] pl-4 mb-6 italic text-slate-500 text-sm">
-                "No meu time, posso admitir erros sem sentir que serei julgado"
+                &ldquo;No meu time, posso admitir erros sem sentir que serei julgado&rdquo;
                 <span className="block text-xs mt-1 not-italic text-slate-400">
                   Exemplo de item da escala · Likert 1 (Discordo totalmente) → 5 (Concordo totalmente)
                 </span>
@@ -569,7 +724,7 @@ function EdmondsonSection() {
         <FadeIn delay={0.2}>
           <blockquote className="border-l-4 border-blue-500 pl-6 py-2 mb-12 max-w-3xl mx-auto">
             <p className="text-lg italic text-slate-600 leading-relaxed">
-              "Psychological safety is not about being nice. It&apos;s about giving candid feedback, openly admitting mistakes, and learning from each other."
+              &ldquo;Psychological safety is not about being nice. It&apos;s about giving candid feedback, openly admitting mistakes, and learning from each other.&rdquo;
             </p>
             <footer className="mt-3 text-sm text-slate-400 not-italic">
               — Amy Edmondson, <span className="italic">The Fearless Organization</span> (2018)
@@ -608,6 +763,124 @@ function EdmondsonSection() {
             </div>
             <p className="text-xs text-slate-400 mt-4">
               * Itens reversos (1, 3, 5) são recodificados antes do cálculo do score médio para corrigir viés de aquiescência.
+            </p>
+          </div>
+        </FadeIn>
+      </div>
+    </section>
+  );
+}
+
+function ManagerDualSection() {
+  const rows = [
+    {
+      label: "Sinal",
+      emotion: "Tempo real, durante a sprint",
+      edmondson: "Periódico, ao encerrar a sprint",
+    },
+    {
+      label: "O que mede",
+      emotion: "Pulso emocional individual",
+      edmondson: "Clima estrutural de segurança do time",
+    },
+    {
+      label: "Ação típica",
+      emotion: "Responder mensagem anônima, 1:1 imediato",
+      edmondson: "Abrir retrospectiva com dados, definir melhorias",
+    },
+  ];
+
+  return (
+    <section className="bg-[#0f2240] py-24 px-6">
+      <div className="max-w-5xl mx-auto">
+        <FadeIn className="text-center mb-16">
+          <p className="text-blue-400 font-semibold text-sm uppercase tracking-widest mb-3">
+            Visão do gestor
+          </p>
+          <h2
+            className="text-4xl font-extrabold text-white"
+            style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+          >
+            Como o gestor usa os dois instrumentos
+          </h2>
+          <p className="text-blue-200 mt-4 max-w-2xl mx-auto">
+            Registro de emoções e questionário de Edmondson se complementam. Usados juntos, formam um ciclo de gestão proativa baseada em dados.
+          </p>
+        </FadeIn>
+
+        {/* Two instrument cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          {/* Emotion pulse */}
+          <FadeIn delay={0.1} direction="left">
+            <div className="bg-white/10 border border-white/20 rounded-2xl p-8 h-full select-none">
+              <span className="inline-block bg-blue-500/30 text-blue-200 text-xs font-bold px-3 py-1 rounded-full mb-5">
+                A qualquer momento da sprint
+              </span>
+              <div className="flex items-center gap-3 mb-5">
+                <div className="w-12 h-12 rounded-xl bg-blue-500 flex items-center justify-center shrink-0">
+                  <Activity className="text-white" size={22} />
+                </div>
+                <h3 className="text-2xl font-bold text-white" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                  Pulso emocional
+                </h3>
+              </div>
+              <p className="text-blue-100 text-sm leading-relaxed mb-6">
+                Dashboard em tempo real mostrando quais emoções estão sendo registradas — distribuição, intensidade média e tendência. Alertas imediatos quando sentimentos negativos aumentam.
+              </p>
+              <div className="space-y-3">
+                {rows.map((r) => (
+                  <div key={r.label} className="flex gap-3">
+                    <span className="text-blue-400 text-xs font-bold w-24 shrink-0 pt-0.5 uppercase tracking-wide">
+                      {r.label}
+                    </span>
+                    <span className="text-blue-100 text-sm">{r.emotion}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </FadeIn>
+
+          {/* Edmondson diagnosis */}
+          <FadeIn delay={0.2} direction="right">
+            <div className="bg-white/10 border border-white/20 rounded-2xl p-8 h-full select-none">
+              <span className="inline-block bg-indigo-500/30 text-indigo-200 text-xs font-bold px-3 py-1 rounded-full mb-5">
+                Ao encerrar a sprint
+              </span>
+              <div className="flex items-center gap-3 mb-5">
+                <div className="w-12 h-12 rounded-xl bg-indigo-500 flex items-center justify-center shrink-0">
+                  <ClipboardList className="text-white" size={22} />
+                </div>
+                <h3 className="text-2xl font-bold text-white" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                  Diagnóstico estrutural
+                </h3>
+              </div>
+              <p className="text-blue-100 text-sm leading-relaxed mb-6">
+                Score médio de segurança psicológica com dispersão interna. Evolução histórica por sprint. Alerta de heterogeneidade alta sinaliza percepções divergentes no time.
+              </p>
+              <div className="space-y-3">
+                {rows.map((r) => (
+                  <div key={r.label} className="flex gap-3">
+                    <span className="text-blue-400 text-xs font-bold w-24 shrink-0 pt-0.5 uppercase tracking-wide">
+                      {r.label}
+                    </span>
+                    <span className="text-blue-100 text-sm">{r.edmondson}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </FadeIn>
+        </div>
+
+        {/* Key insight banner */}
+        <FadeIn delay={0.3}>
+          <div className="bg-white/5 border border-white/10 rounded-2xl px-8 py-6 text-center select-none">
+            <p className="text-white text-lg font-bold mb-2" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+              Emoções revelam <span className="text-blue-300">quando</span> algo está errado.{" "}
+              Segurança psicológica revela <span className="text-indigo-300">por que</span> o clima está como está.
+            </p>
+            <p className="text-blue-300 text-sm">
+              Juntos, os dois instrumentos formam um ciclo contínuo:{" "}
+              <strong className="text-white">Sinal → Diagnóstico → Ação → Melhoria</strong>
             </p>
           </div>
         </FadeIn>
@@ -945,7 +1218,7 @@ function AcademicSection() {
               className="text-xl font-bold mb-3 leading-snug hover:underline block"
               style={{ fontFamily: "'Space Grotesk', sans-serif" }}
             >
-              "AgileMood: A Tool for Ongoing Measurement of Psychological Safety in Agile Teams"
+              &ldquo;AgileMood: A Tool for Ongoing Measurement of Psychological Safety in Agile Teams&rdquo;
             </a>
             <p className="text-blue-200 text-sm mb-4">
               Arthur M. B. Melo, Marcelo Marinho, Suzana Sampaio
@@ -985,7 +1258,7 @@ function Footer() {
             <ul className="space-y-3 text-sm text-slate-400">
               <li>
                 <a
-                  href="https://github.com/Arth19/AgileMood-FrontEnd"
+                  href="https://github.com/phos-dev/AgileMood-FrontEnd"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-white flex items-center gap-2 transition-colors"
@@ -995,7 +1268,7 @@ function Footer() {
               </li>
               <li>
                 <a
-                  href="https://github.com/Arth19/AgileMood-Backend"
+                  href="https://github.com/phos-dev/AgileMood-Backend"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-white flex items-center gap-2 transition-colors"
@@ -1068,8 +1341,10 @@ export default function LandingPage() {
       <main>
         <HeroSection />
         <HowItWorksSection />
+        <EmotionsSection />
         <WhenToUseSection />
         <EdmondsonSection />
+        <ManagerDualSection />
         <FeaturesSection />
         <IntegrationsSection />
         <AcademicSection />
