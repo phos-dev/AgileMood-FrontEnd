@@ -65,15 +65,6 @@ export default function TeamPageClient({ teamId }: TeamPageClientProps) {
       }
 
       const data = await response.json();
-      
-      // Log para depuração
-      console.log("Dados do time recebidos:", {
-        teamName: data.team_data.name,
-        userRole: data.user_role,
-        membersCount: data.members.length,
-        members: data.members.map((m: TeamMember) => ({ name: m.name, role: m.role }))
-      });
-      
       setTeamData(data);
       setLoading(false);
     } catch (err) {
@@ -193,11 +184,7 @@ export default function TeamPageClient({ teamId }: TeamPageClientProps) {
 
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || fallbackUrl;
       const token = localStorage.getItem('token');
-      
-      // Log para depuração
-      console.log(`Tentando remover membro: ${memberToDelete.name}, Email: ${memberToDelete.email}`);
-      
-      // Usando o email como parâmetro de consulta
+
       const response = await fetch(`${apiUrl}/teams/${teamId}/member?user_email=${memberToDelete.email}`, {
         method: 'DELETE',
         headers: {
@@ -262,11 +249,6 @@ export default function TeamPageClient({ teamId }: TeamPageClientProps) {
         throw new Error('Usuário não autenticado');
       }
       
-      // Log para depuração - verificar a estrutura do objeto currentReport
-      console.log("Dados do registro de emoção:", currentReport);
-      console.log("ID do registro de emoção:", currentReport.id);
-      console.log("Tipo do ID:", typeof currentReport.id);
-      
       // Verificar se o ID existe
       if (currentReport.id === undefined || currentReport.id === null) {
         throw new Error('ID do registro de emoção não encontrado');
@@ -285,9 +267,6 @@ export default function TeamPageClient({ teamId }: TeamPageClientProps) {
         is_anonymous: isAnonymousFeedback
       };
       
-      // Log do corpo da requisição
-      console.log("Corpo da requisição:", JSON.stringify(requestBody));
-      
       const response = await fetch(`${apiUrl}/feedback/`, {
         method: 'POST',
         headers: {
@@ -297,10 +276,7 @@ export default function TeamPageClient({ teamId }: TeamPageClientProps) {
         body: JSON.stringify(requestBody),
       });
 
-      // Log da resposta
-      console.log("Status da resposta:", response.status);
       const responseText = await response.text();
-      console.log("Resposta completa:", responseText);
       
       if (!response.ok) {
         let errorData;
@@ -309,8 +285,6 @@ export default function TeamPageClient({ teamId }: TeamPageClientProps) {
         } catch (e) {
           errorData = { detail: responseText || 'Erro desconhecido' };
         }
-        console.error("Erro detalhado da API:", errorData);
-        
         // Verificar se o erro é de permissão
         if (response.status === 403) {
           throw new Error('Apenas gerentes podem enviar feedback');
@@ -327,12 +301,9 @@ export default function TeamPageClient({ teamId }: TeamPageClientProps) {
       try {
         data = JSON.parse(responseText);
       } catch (e) {
-        console.warn("Resposta não é um JSON válido:", responseText);
         data = { message: "Feedback enviado com sucesso" };
       }
-      
-      console.log("Feedback enviado com sucesso:", data);
-      
+
       toast.success("Feedback enviado com sucesso!");
       setShowFeedbackModal(false);
       setFeedbackText('');

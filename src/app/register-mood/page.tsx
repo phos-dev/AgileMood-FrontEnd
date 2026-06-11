@@ -57,19 +57,10 @@ export default function RegisterMood() {
   const handleSubmit = async () => {
     if (selectedMoodId !== null) {
       try {
-        console.log("Iniciando envio do formulário:", { 
-          selectedMoodId, 
-          intensity, 
-          description, 
-          isAnonymous 
-        });
-        
         setIsSubmitting(true);
         setError(null);
         
         await registerEmotion(selectedMoodId, intensity, description, isAnonymous);
-        
-        console.log("Emoção registrada com sucesso, redirecionando...");
         toast.success("🎉 Emoção registrada com sucesso!", { duration: 2000 });
         
         // Usar setTimeout para garantir que o toast seja exibido antes do redirecionamento

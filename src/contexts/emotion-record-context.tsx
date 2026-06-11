@@ -564,8 +564,6 @@ export const EmotionRecordProvider = ({ children }: { children: ReactNode }) => 
             is_negative: emotionDetails.is_negative,
           };
           
-          console.log(`Enviando POST para emoção ${emotionId}:`, payload);
-          
           // Fazer o POST para esta emoção
           const response = await fetch(`${API_URL}/emotions`, {
             method: "POST",
@@ -578,7 +576,6 @@ export const EmotionRecordProvider = ({ children }: { children: ReactNode }) => 
           
           if (response.ok) {
             const data: Emotion = await response.json();
-            console.log(`Emoção ${emotionId} criada com sucesso:`, data);
             results.push(data);
           } else {
             const errorData = await response.json().catch(() => ({
@@ -602,7 +599,6 @@ export const EmotionRecordProvider = ({ children }: { children: ReactNode }) => 
       
       // Verificar resultados
       if (results.length > 0) {
-        console.log(`${results.length} emoções atualizadas com sucesso`);
         toast.success(`🎉 ${results.length} emoções atualizadas com sucesso!`);
         
         // Recarregar as emoções do time após o sucesso
@@ -630,8 +626,6 @@ export const EmotionRecordProvider = ({ children }: { children: ReactNode }) => 
     notes: string,
     isAnonymous: boolean
   ) => {
-    console.log("Iniciando registro de emoção:", { emotionId, intensity, isAnonymous });
-    
     if (!user) {
       return;
     }
@@ -644,8 +638,6 @@ export const EmotionRecordProvider = ({ children }: { children: ReactNode }) => 
       is_anonymous: isAnonymous,
     };
 
-    console.log("Enviando payload:", payload);
-
     try {
       // Usando o novo endpoint /emotion_record/ conforme a especificação da API
       const response = await fetch(`${API_URL}/emotion_record/`, {
@@ -657,17 +649,12 @@ export const EmotionRecordProvider = ({ children }: { children: ReactNode }) => 
         body: JSON.stringify(payload),
       });
 
-      console.log("Resposta da API:", { status: response.status, ok: response.ok });
-
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({ message: response.statusText }));
-        console.error("Erro detalhado:", errorData);
         throw new Error(`Erro: ${errorData.message || response.statusText}`);
       }
 
       const newRecord = await response.json();
-      console.log("Registro criado com sucesso:", newRecord);
-      
       setEmotionRecords((prev) => [newRecord, ...prev]);
     } catch (error) {
       console.error("Erro ao registrar emoção:", error);

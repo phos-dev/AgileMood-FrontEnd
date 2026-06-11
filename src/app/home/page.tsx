@@ -13,7 +13,7 @@ export default function HomePage() {
   if (loading) {
     return <p className="text-center mt-10">Carregando informações do usuário...</p>;
   }
-console.log('USER IN HOME: ', user)
+
   return (
     <ProtectedRoute>
     <div className="flex h-screen">
