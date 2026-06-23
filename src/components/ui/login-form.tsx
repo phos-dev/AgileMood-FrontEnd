@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import useAuth from "@/hooks/useAuth";
@@ -11,6 +12,7 @@ const ERROR_TRANSLATIONS: Record<string, string> = {
 
 export default function LoginForm({ switchToRegister }: { switchToRegister: () => void }) {
   const { login, loading, error } = useAuth();
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -42,6 +44,16 @@ export default function LoginForm({ switchToRegister }: { switchToRegister: () =
         className="w-full border border-gray-300 p-2 rounded-md"
         required
       />
+
+      <div className="text-right">
+        <button
+          type="button"
+          onClick={() => router.push("/forgot-password")}
+          className="text-sm text-blue-700 hover:underline"
+        >
+          Esqueceu a senha?
+        </button>
+      </div>
 
       {displayError && (
         <p className="text-red-500 text-sm">{displayError}</p>

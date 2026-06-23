@@ -117,5 +117,57 @@ export default function useAuth() {
     }
   };
 
-  return { login, register, loading, error, successMessage };
+  const forgotPassword = async (email: string): Promise<boolean> => {
+    setLoading(true);
+    setError(null);
+    setSuccessMessage(null);
+    try {
+      const response = await fetch(`${API_URL}/user/forgot-password`, {
+        method: "POST",
+        mode: "cors",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      if (!response.ok) {
+        setError("Erro ao solicitar redefinição de senha.");
+        return false;
+      }
+      setSuccessMessage("Se o email existir, um link de redefinição foi enviado.");
+      return true;
+    } catch (err: any) {
+      setError(err.message || "Erro inesperado.");
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const resetPassword = async (token: string, newPassword: string): Promise<boolean> => {
+    setLoading(true);
+    setError(null);
+    setSuccessMessage(null);
+    try {
+      const response = await fetch(`${API_URL}/user/reset-password-by-token`, {
+        method: "POST",
+        mode: "cors",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify({ token, new_password: newPassword }),
+      });
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
+        setError(errorData?.detail || "Token inválido ou expirado.");
+        return false;
+      }
+      setSuccessMessage("Senha redefinida com sucesso!");
+      router.push("/login");
+      return true;
+    } catch (err: any) {
+      setError(err.message || "Erro inesperado.");
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { login, register, forgotPassword, resetPassword, loading, error, successMessage };
 }
